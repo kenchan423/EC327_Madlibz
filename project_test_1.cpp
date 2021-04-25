@@ -78,15 +78,15 @@ int main(int argc, char** argv) {
   //cout << resp << '\n';
   json current_madlibz = json::parse(resp);
   //cout << current_madlibz << '\n';
-  vector<string> user_inputs = current_madlibz["blanks"];
-  int num_output = current_madlibz["blanks"].size();
+  vector<string> questions = current_madlibz["blanks"];
+  int num_output = questions.size();
   vector<string> value_str;
   // the last part of value is always a 0 
   // b/c 0 at end of cstrings
   for (int k=0; k<num_output-1; k++){
     value_str.push_back(current_madlibz["value"].at(k));
   }
-  vector<string> blank_input;
+
   // not always strings --> so used auto
   string title_str = current_madlibz["title"];
   /*
@@ -95,30 +95,20 @@ int main(int argc, char** argv) {
     cout << value_str[p] << '\n';
   }
   */
-  cout << title_str << '\n';
+  
+  // terminal stuff
   string temp_str;
   for (int o=0; o<num_output-1; o++){
-    cout << user_inputs.at(o) << '\n';
-    cin >> temp_str;
-    blank_input.push_back(temp_str);
+    cout << questions.at(o) << '\n';
   }
+  
   /*
   for (int p=0; p<blank_input.size()-1; p++){
     cout << blank_input.at(p) << '\n';
   }
   */
   
-  string value_temp;
-  vector<string> final_madlibz;
-  for (int q=0; q<blank_input.size()-1; q++){
-    value_temp = value_str.at(q) + blank_input.at(q);
-    final_madlibz.push_back(value_temp);
-    value_temp.clear();
-  }
-
-  for (int c=0; c<blank_input.size()-1; c++){
-    cout << final_madlibz.at(c) << '\n';
-  }
+  
 
   all_madlibz.push_back(current_madlibz);
 
@@ -134,7 +124,7 @@ int main(int argc, char** argv) {
 
   std::ifstream mylib_rd("madlibz.json", std::ifstream::binary);
   mylib_rd >> prev_madlibz;
-  cout << prev_madlibz << '\n';
+  //cout << prev_madlibz << '\n';
   // printing out all previous madlibz --> another button
 
 
@@ -173,6 +163,122 @@ int main(int argc, char** argv) {
     window.display();
   }
   */
+
+  vector <string> answers;
+  // populate with inputs from API
+
+  sf::RenderWindow window(sf::VideoMode(800, 800), "Madlibz Lite");
+  sf::RectangleShape rectangle(sf::Vector2f(110.f, 50.f));
+  rectangle.setFillColor(sf::Color::White);
+  rectangle.setPosition(350, 600);
+
+  sf::RectangleShape input_box(sf::Vector2f(110.f, 50.f));
+  input_box.setFillColor(sf::Color::White);
+  input_box.setPosition(350, 300);
+
+
+  sf::Font font;
+  font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
+  sf::Text text_submit;
+  text_submit.setFont(font);
+  text_submit.setString("Submit");
+  text_submit.setFillColor(sf::Color::Blue);
+  text_submit.setStyle(sf::Text::Bold);
+  text_submit.setPosition(350,600);
+  window.setFramerateLimit(10);
+
+  sf::Text title;
+  title.setFont(font);
+  title.setString(title_str);
+  title.setPosition(350,100);
+
+  string input_text;
+
+
+  sf::Text text_input;
+  text_input.setFont(font);
+  text_input.setString(input_text);
+  text_input.setFillColor(sf::Color::Blue);
+  text_input.setStyle(sf::Text::Bold);
+  text_input.setPosition(350,300);
+
+
+  int question_counter = 0;
+  sf::Text header_text;
+  header_text.setFont(font);
+  header_text.setString(questions[question_counter]);
+  header_text.setFillColor(sf::Color::Red);
+  header_text.setStyle(sf::Text::Bold);
+  header_text.setPosition(350,200);
+  while (window.isOpen())
+  {
+      sf::Event event;
+      while (window.pollEvent(event))
+      {
+          if (event.type == sf::Event::Closed)
+              window.close();
+          // if something typed
+          else if (event.type == sf::Event::TextEntered) {
+              if (std::isprint(event.text.unicode) && question_counter < questions.size()-1){
+                  input_text += event.text.unicode;
+                   text_input.setString(input_text);
+              }
+          }
+          // if backspace
+          else if (event.type == sf::Event::KeyPressed) {
+              if (event.key.code == sf::Keyboard::BackSpace) {
+                  if (!input_text.empty()) {
+                      input_text.pop_back();
+                      text_input.setString(input_text);
+                    }
+              }
+              // entering an input
+              if (event.key.code == sf::Keyboard::Return) {
+                      if (question_counter < questions.size()-1){
+                      answers.push_back(input_text);
+                      text_input.setString("");
+                      question_counter++;
+                      cout << question_counter << '\n';
+                      header_text.setString(questions.at(question_counter));
+                      input_text = "";
+                    }
+              }
+            }
+          if (event.type == sf::Event::MouseButtonPressed){
+            double x = event.mouseButton.x;
+            double y = event.mouseButton.y;
+            if (x >= 350 && x <= 460) {
+              if (y >= 600 && y <=650) {
+                  window.close();
+              }
+            }
+          }
+      }
+      window.clear();
+      window.draw(header_text);
+      window.draw(rectangle);
+      window.draw(text_submit);
+      window.draw(input_box);
+      window.draw(text_input);
+      window.draw(title);
+      window.display();
+  }
+  for (int i=0; i<answers.size(); i++) cout<<answers[i]<<'\n';
+
+  
+  // making the madlibz
+  string value_temp;
+  vector<string> final_madlibz;
+  for (int q=0; q<answers.size()-1; q++){
+    value_temp = value_str.at(q) + answers.at(q);
+    final_madlibz.push_back(value_temp);
+    value_temp.clear();
+  }
+
+  for (int c=0; c<answers.size()-1; c++){
+    cout << final_madlibz.at(c) << '\n';
+  }
+  
 
   return 0;
 }
