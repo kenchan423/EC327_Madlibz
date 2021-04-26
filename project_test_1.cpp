@@ -130,44 +130,11 @@ int main(int argc, char** argv) {
 
 
   // front end portion
-  /*
-  sf::RenderWindow window(sf::VideoMode(1000,1000), "SFML works!");
-  sf::Text blanks;
-  sf::Text values;
-  sf::Text title;
-  // font of the blanks
-  sf::Font font;
-  font.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
-  blanks.setFont(font);
-  // for loop to print out each blank individually
-  int total_entries = user_inputs.size();
-  string user_inputs_str;
-  for (int i=0; i<total_entries; i++){
-    user_inputs_str.append(user_inputs.at(i));
-    user_inputs_str.append(": ");
-    user_inputs_str.append("\n");
-  }
-
-  blanks.setString(user_inputs_str);
-
-  // customizing text appearance
-  blanks.setFillColor(sf::Color::White);
-  blanks.setOutlineColor(sf::Color::Blue);
-  blanks.setOutlineThickness(2);
-
-  window.setFramerateLimit(10);
-  while (window.isOpen())
-  {
-    blanks.setPosition(100,100);
-    window.draw(blanks);
-    window.display();
-  }
-  */
-
+  
   vector <string> answers;
   // populate with inputs from API
 
-  sf::RenderWindow window(sf::VideoMode(800, 800), "Madlibz Lite");
+  sf::RenderWindow window(sf::VideoMode(800, 800), "Madlibz Lite User Input");
   sf::RectangleShape rectangle(sf::Vector2f(110.f, 50.f));
   rectangle.setFillColor(sf::Color::White);
   rectangle.setPosition(350, 600);
@@ -238,7 +205,6 @@ int main(int argc, char** argv) {
                       answers.push_back(input_text);
                       text_input.setString("");
                       question_counter++;
-                      cout << question_counter << '\n';
                       header_text.setString(questions.at(question_counter));
                       input_text = "";
                     }
@@ -255,7 +221,9 @@ int main(int argc, char** argv) {
           }
       }
       window.clear();
-      window.draw(header_text);
+      if (question_counter < questions.size()-1){
+        window.draw(header_text);
+      }
       window.draw(rectangle);
       window.draw(text_submit);
       window.draw(input_box);
@@ -269,16 +237,51 @@ int main(int argc, char** argv) {
   // making the madlibz
   string value_temp;
   vector<string> final_madlibz;
-  for (int q=0; q<answers.size()-1; q++){
+  for (int q=0; q<answers.size(); q++){
     value_temp = value_str.at(q) + answers.at(q);
     final_madlibz.push_back(value_temp);
     value_temp.clear();
   }
+  string madlibz_lite;
+  for (int c=0; c<answers.size(); c++){
+    // cout << final_madlibz.at(c) << '\n';
+    value_temp.clear();
+    value_temp = final_madlibz.at(c) + '\n';
+    if (value_temp.length() > 30){
+      madlibz_lite.append(value_temp.substr(0,20));
+      madlibz_lite.append("\n");
+      madlibz_lite.append(value_temp.substr(21, value_temp.length()-1));
+      continue; 
+    }
+    madlibz_lite.append(value_temp);
+  }
+  cout << madlibz_lite;
+  
+  // 2nd terminal --> displaying the final madlibz
+  sf::RenderWindow window2(sf::VideoMode(1000, 800), "Madlibz Lite");
+  sf::Text madlibz_str;
 
-  for (int c=0; c<answers.size()-1; c++){
-    cout << final_madlibz.at(c) << '\n';
+  madlibz_str.setString(madlibz_lite);
+  madlibz_str.setFont(font);
+  madlibz_str.setPosition(350,100);
+  // can try to do if statements and make this more responsive
+  madlibz_str.setCharacterSize(10);
+
+  // customizing text appearance
+  madlibz_str.setFillColor(sf::Color::Red);
+  madlibz_str.setOutlineColor(sf::Color::Blue);
+  madlibz_str.setOutlineThickness(2);
+  madlibz_str.setStyle(sf::Text::Bold);
+
+  window.setFramerateLimit(10);
+  while (window2.isOpen())
+  {
+    madlibz_str.setPosition(100,100);
+    window2.draw(madlibz_str);
+    window2.display();
   }
   
+
 
   return 0;
 }
