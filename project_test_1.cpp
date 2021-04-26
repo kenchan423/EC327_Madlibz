@@ -247,12 +247,16 @@ int main(int argc, char** argv) {
     // cout << final_madlibz.at(c) << '\n';
     value_temp.clear();
     value_temp = final_madlibz.at(c) + '\n';
-    if (value_temp.length() > 30){
+    
+    if (value_temp.length() > 40){
       madlibz_lite.append(value_temp.substr(0,20));
+      cout << value_temp.substr(0,20);
       madlibz_lite.append("\n");
       madlibz_lite.append(value_temp.substr(21, value_temp.length()-1));
+      cout << value_temp.substr(21, value_temp.length()-1);
       continue; 
     }
+    
     madlibz_lite.append(value_temp);
   }
   cout << madlibz_lite;
@@ -265,7 +269,7 @@ int main(int argc, char** argv) {
   madlibz_str.setFont(font);
   madlibz_str.setPosition(350,100);
   // can try to do if statements and make this more responsive
-  madlibz_str.setCharacterSize(10);
+  madlibz_str.setCharacterSize(15);
 
   // customizing text appearance
   madlibz_str.setFillColor(sf::Color::Red);
