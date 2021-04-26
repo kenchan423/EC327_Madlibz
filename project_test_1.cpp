@@ -43,34 +43,110 @@ string get_url_contents(string theurl) {
 }
 
 
-int main(int argc, char** argv) {
+int main() {
   json all_madlibz;
   // will ask for user input on minlength & maxlength ==> may be add a cool user input button
   // connect these to buttons?
-  cout << "How big of a madlibz do you want?\n";
-  cout << "Minimum Length: ";
-  int min_len;
-  cin >> min_len;
-  cout << "Maximum Length: ";
-  int max_len;
-  cin >> max_len;
-  //try{
-    string minlength = "minlength=" + std::to_string(min_len);
-    string maxlength = "maxlength=" + std::to_string(max_len);
-    //?minlength=5&maxlength=10
-    string user_input_length = "?" + minlength + "&" + maxlength;
-    //cout << user_input_length << '\n';
-    string madlibz_url = "http://madlibz.herokuapp.com/api/random"+user_input_length;
-    // catch error --> if the user input min > 1 & max < 10 
-    // --> no templates fulfill that --> error
-  //}
-  //catch(int max_len, int min_len){
-  //  cout << "There are no templates that meet the maximum length: "
-  //  + max_len " and minimum length: " + min_len + " desired";
-  //}
-  
+  vector<string> max_min;
+  max_min.push_back("Maximum");
+  max_min.push_back("Minimum"); 
+  vector<string> answers1;
+  sf::RenderWindow window1(sf::VideoMode(800, 800), "How big of a Madlibz?");
+  sf::RectangleShape rectangle1(sf::Vector2f(110.f, 50.f));
+  rectangle1.setFillColor(sf::Color::White);
+  rectangle1.setPosition(350, 600);
 
-  //cout << madlibz_url << '\n';
+  sf::RectangleShape input_box1(sf::Vector2f(110.f, 50.f));
+  input_box1.setFillColor(sf::Color::White);
+  input_box1.setPosition(350, 300);
+
+  sf::Font font1;
+  font1.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
+  sf::Text text_submit1;
+  text_submit1.setFont(font1);
+  text_submit1.setString("Submit");
+  text_submit1.setFillColor(sf::Color::Blue);
+  text_submit1.setStyle(sf::Text::Bold);
+  text_submit1.setPosition(350,600);
+  window1.setFramerateLimit(10);
+
+  string input_text1;
+
+  sf::Text text_input1;
+  text_input1.setFont(font1);
+  text_input1.setString(input_text1);
+  text_input1.setFillColor(sf::Color::Blue);
+  text_input1.setStyle(sf::Text::Bold);
+  text_input1.setPosition(350,300);
+
+
+  int length_counter = 0;
+  sf::Text header_text1;
+  header_text1.setFont(font1);
+  header_text1.setString(max_min[length_counter]);
+  header_text1.setFillColor(sf::Color::Red);
+  header_text1.setStyle(sf::Text::Bold);
+  header_text1.setPosition(350,200);
+  while (window1.isOpen())
+  {
+      sf::Event event1;
+      while (window1.pollEvent(event1))
+      {
+          if (event1.type == sf::Event::Closed)
+              window1.close();
+          // if something typed
+          else if (event1.type == sf::Event::TextEntered) {
+              if (std::isprint(event1.text.unicode) && length_counter < max_min.size()-1){
+                  input_text1 += event1.text.unicode;
+                   text_input1.setString(input_text1);
+              }
+          }
+          // if backspace
+          else if (event1.type == sf::Event::KeyPressed) {
+              if (event1.key.code == sf::Keyboard::BackSpace) {
+                  if (!input_text1.empty()) {
+                      input_text1.pop_back();
+                      text_input1.setString(input_text1);
+                    }
+              }
+              // entering an input
+              if (event1.key.code == sf::Keyboard::Return) {
+                      if (length_counter < max_min.size()-1){
+                      answers1.push_back(input_text1);
+                      text_input1.setString("");
+                      length_counter++;
+                      header_text1.setString(max_min.at(length_counter));
+                      input_text1 = "";
+                    }
+              }
+            }
+          if (event1.type == sf::Event::MouseButtonPressed){
+            double x1 = event1.mouseButton.x;
+            double y1 = event1.mouseButton.y;
+            if (x1 >= 350 && x1 <= 460) {
+              if (y1 >= 600 && y1 <=650) {
+                  window1.close();
+              }
+            }
+          }
+      }
+      window1.clear();
+      if (length_counter < max_min.size()-1){
+        window1.draw(header_text1);
+      }
+      window1.draw(rectangle1);
+      window1.draw(text_submit1);
+      window1.draw(input_box1);
+      window1.draw(text_input1);
+      window1.display();
+  }
+
+  string tempmin = answers1.at(0);
+  string tempmax = answers1.at(1);
+  string minlength = "minlength=" + tempmin;
+  string maxlength = "maxlength=" + tempmax;
+  string user_input_length = "?" + minlength + "&" + maxlength;
+  string madlibz_url = "http://madlibz.herokuapp.com/api/random"+user_input_length;
 
   string resp;
   resp = get_url_contents(madlibz_url);
@@ -231,7 +307,6 @@ int main(int argc, char** argv) {
       window.draw(title);
       window.display();
   }
-  for (int i=0; i<answers.size(); i++) cout<<answers[i]<<'\n';
 
   
   // making the madlibz
