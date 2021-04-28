@@ -48,6 +48,46 @@ string get_url_contents(string theurl) {
 
 
 int main() {
+
+  // intro screen
+  sf::RenderWindow window3(sf::VideoMode(2500, 1000), "Madlibz Lite");
+  sf::Text intro;
+  sf::Font font1;
+  font1.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
+  intro.setFont(font1);
+  string introduction ("Madlibz Lite");
+
+  intro.setString(introduction);
+  intro.setPosition(350,100);
+  // can try to do if statements and make this more responsive
+  intro.setCharacterSize(80);
+
+  // customizing text appearance
+  intro.setFillColor(sf::Color::White);
+  intro.setOutlineThickness(2);
+  intro.setStyle(sf::Text::Bold);
+
+
+  window3.setFramerateLimit(10);
+  while (window3.isOpen())
+  {
+    sf::Event event3;
+    while (window3.pollEvent(event3))
+    {
+      if (event3.type == sf::Event::Closed)
+              window3.close();
+      else if (event3.type == sf::Event::KeyPressed) {
+        if (event3.key.code == sf::Keyboard::Return)
+              window3.close(); 
+      }
+    }
+    intro.setPosition(100,100);
+    window3.draw(intro);
+    window3.display();
+  }
+
+
+  while(true){
   // asking user for max and min length 
   vector<string> max_min;
   max_min.push_back("Maximum");
@@ -70,10 +110,6 @@ int main() {
   sf::RectangleShape input_box1(sf::Vector2f(110.f, 50.f));
   input_box1.setFillColor(sf::Color::White);
   input_box1.setPosition(350, 300);
-
-  // font
-  sf::Font font1;
-  font1.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
 
   // submit text
   sf::Text text_submit1;
@@ -187,7 +223,7 @@ int main() {
   vector <string> answers;
   // populate with inputs from API
 
-  sf::RenderWindow window(sf::VideoMode(800, 800), "Madlibz Lite User Input");
+  sf::RenderWindow window(sf::VideoMode(1200, 800), "Madlibz Lite User Input");
   sf::RectangleShape rectangle(sf::Vector2f(110.f, 50.f));
   rectangle.setFillColor(sf::Color::White);
   rectangle.setPosition(350, 600);
@@ -297,7 +333,6 @@ int main() {
   vector<string> final_madlibz;
   for (int q=0; q<answers.size(); q++){
     value_temp = value_str.at(q) + answers.at(q);
-    cout <<  value_temp << '\n';
     final_madlibz.push_back(value_temp);
     value_temp.clear();
   }
@@ -313,7 +348,7 @@ int main() {
       temp_len = value_temp.length()/2;
       madlibz_lite.append(value_temp.substr(0, temp_len));
       madlibz_lite.append("\n");
-      madlibz_lite.append(value_temp.substr(temp_len-1, temp_len));
+      madlibz_lite.append(value_temp.substr(temp_len, temp_len));
       continue; 
     }
     
@@ -372,6 +407,6 @@ int main() {
   mylib_rd >> prev_madlibz;
 
   */
-
+  }
   return 0;
 }
