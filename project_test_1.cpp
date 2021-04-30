@@ -49,49 +49,12 @@ string get_url_contents(string theurl) {
 
 int main() {
 
-  // intro screen
-  sf::RenderWindow window3(sf::VideoMode(2500, 1000), "Madlibz Lite");
-  sf::Text intro;
-  sf::Font font1;
-  font1.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
-  intro.setFont(font1);
-  string introduction ("Madlibz Lite");
-
-  intro.setString(introduction);
-  intro.setPosition(350,100);
-  // can try to do if statements and make this more responsive
-  intro.setCharacterSize(80);
-
-  // customizing text appearance
-  intro.setFillColor(sf::Color::White);
-  intro.setOutlineThickness(2);
-  intro.setStyle(sf::Text::Bold);
-
-
-  window3.setFramerateLimit(10);
-  while (window3.isOpen())
-  {
-    sf::Event event3;
-    while (window3.pollEvent(event3))
-    {
-      if (event3.type == sf::Event::Closed)
-              window3.close();
-      else if (event3.type == sf::Event::KeyPressed) {
-        if (event3.key.code == sf::Keyboard::Return)
-              window3.close(); 
-      }
-    }
-    intro.setPosition(100,100);
-    window3.draw(intro);
-    window3.display();
-  }
-
 
   while(true){
   // asking user for max and min length 
   vector<string> max_min;
-  max_min.push_back("Maximum");
-  max_min.push_back("Minimum");
+  max_min.push_back("Enter Maximum: ");
+  max_min.push_back("Enter Minimum: ");
 
   vector<string> user_max_min;
 
@@ -107,10 +70,12 @@ int main() {
   rectangle1.setPosition(350, 600);
 
   // text input
-  sf::RectangleShape input_box1(sf::Vector2f(110.f, 50.f));
+  sf::RectangleShape input_box1(sf::Vector2f(150.f, 50.f));
   input_box1.setFillColor(sf::Color::White);
-  input_box1.setPosition(350, 300);
+  input_box1.setPosition(350, 400);
 
+  sf::Font font1;
+  font1.loadFromFile("/usr/share/fonts/truetype/ubuntu/Ubuntu-BI.ttf");
   // submit text
   sf::Text text_submit1;
   text_submit1.setFont(font1);
@@ -126,7 +91,7 @@ int main() {
   text_input1.setString(input_text1);
   text_input1.setFillColor(sf::Color::Blue);
   text_input1.setStyle(sf::Text::Bold);
-  text_input1.setPosition(350,300);
+  text_input1.setPosition(350,400);
 
   int length_counter = 0;
 
@@ -136,9 +101,24 @@ int main() {
   header_text1.setString(max_min[length_counter]);
   header_text1.setFillColor(sf::Color::Red);
   header_text1.setStyle(sf::Text::Bold);
-  header_text1.setPosition(350,200);
+  header_text1.setPosition(350,350);
 
   length_counter++;
+
+  // intro screen
+  sf::Text intro;
+  intro.setFont(font1);
+  string introduction ("Madlibz Lite");
+
+  intro.setString(introduction);
+  intro.setPosition(175,100);
+  // can try to do if statements and make this more responsive
+  intro.setCharacterSize(80);
+
+  // customizing text appearance
+  intro.setFillColor(sf::Color::White);
+  intro.setOutlineThickness(2);
+  intro.setStyle(sf::Text::Bold);
   while (window1.isOpen())
   {
       sf::Event event1;
@@ -189,6 +169,7 @@ int main() {
           }
       }
       window1.clear(color);
+      window1.draw(intro);
       window1.draw(header_text1);
       window1.draw(rectangle1);
       window1.draw(text_submit1);
@@ -228,7 +209,7 @@ int main() {
   rectangle.setFillColor(sf::Color::White);
   rectangle.setPosition(350, 600);
 
-  sf::RectangleShape input_box(sf::Vector2f(110.f, 50.f));
+  sf::RectangleShape input_box(sf::Vector2f(200.f, 50.f));
   input_box.setFillColor(sf::Color::White);
   input_box.setPosition(350, 300);
 
@@ -246,7 +227,9 @@ int main() {
   sf::Text title;
   title.setFont(font);
   title.setString(title_str);
+  title.setOutlineThickness(2);
   title.setPosition(350,100);
+  title.setCharacterSize(45);
 
   string input_text;
 
@@ -316,7 +299,7 @@ int main() {
             }
           }
       }
-      window.clear();
+      window.clear(color);
       window.draw(header_text);
       window.draw(rectangle);
       window.draw(text_submit);
@@ -342,8 +325,8 @@ int main() {
 
   for (int c=0; c<answers.size(); c++){
     value_temp.clear();
-    value_temp = final_madlibz.at(c) + '\n';
-    
+    value_temp = final_madlibz.at(c) + "\n";
+    // if greater than a certain length, then search for the next space --> and make a new line
     if (value_temp.length() > 80){
       temp_len = value_temp.length()/2;
       madlibz_lite.append(value_temp.substr(0, temp_len));
@@ -351,7 +334,7 @@ int main() {
       madlibz_lite.append(value_temp.substr(temp_len, temp_len));
       continue; 
     }
-    
+
     madlibz_lite.append(value_temp);
   }
   madlibz_lite.append(value_str.at(num_output-1));
@@ -381,6 +364,7 @@ int main() {
       if (event2.type == sf::Event::Closed)
               window2.close();
     }
+    window2.clear(color);
     madlibz_str.setPosition(100,100);
     window2.draw(madlibz_str);
     window2.display();
